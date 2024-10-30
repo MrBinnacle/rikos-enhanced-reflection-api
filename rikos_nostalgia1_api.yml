@@ -1,0 +1,285 @@
+openapi: 3.1.0
+info:
+  title: "Rikos Enhanced Reflection API"
+  version: "3.0.0"
+
+components:
+  schemas:
+    TrackInfo:
+      type: object
+      properties:
+        track:
+          type: string
+          description: "The title of the nostalgic song or piece of music the user wants to explore."
+    MoodInfo:
+      type: object
+      properties:
+        mood:
+          type: string
+          description: "The user’s mood when thinking of the song, e.g., 'bittersweet', 'comforting', 'nostalgic'."
+    MemoryInfo:
+      type: object
+      properties:
+        memory:
+          type: string
+          description: "An optional memory or time period tied to the song."
+    PromptResponse:
+      type: object
+      properties:
+        prompt:
+          type: string
+          example: "Think back to the time when this song was part of your life. What do you remember most about that time?"
+    JournalPromptResponse:
+      type: object
+      properties:
+        journal_prompt:
+          type: string
+          example: "Write about what this memory meant to you and how it shaped who you are today. Is there a piece of that experience you still carry with you?"
+    PlaylistResponse:
+      type: object
+      properties:
+        playlist:
+          type: array
+          items:
+            type: string
+          example: ["Wonderwall - Oasis", "Good Riddance (Time of Your Life) - Green Day", "With or Without You - U2"]
+    FeedbackResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          example: "Thank you for your feedback. It helps us improve your reflective experience."
+    EmotionContextInfo:
+      type: object
+      properties:
+        emotion:
+          type: string
+          description: "The specific emotional context or desired mood, e.g., 'empowered', 'introspective', 'comforted'."
+    SituationInfo:
+      type: object
+      properties:
+        situation:
+          type: string
+          description: "A description of the situation, such as 'quiet night', 'morning commute', or 'relaxing with friends'."
+    PlaylistUpdateResponse:
+      type: object
+      properties:
+        playlist_update:
+          type: array
+          items:
+            type: string
+          example: ["Song Title A - Artist", "Song Title B - Artist"]
+        explanation:
+          type: string
+          example: "Since your mood has shifted to a more relaxed state, here are softer, slower tracks to support this change."
+
+paths:
+  /mood-pattern-detection:
+    post:
+      operationId: detectMoodPatterns
+      summary: "Detect Mood Patterns and Adaptive Suggestions"
+      description: "Analyzes the user's recent music choices to identify recurring emotional patterns, prompting reflection based on those themes."
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                recent_choices:
+                  type: array
+                  items:
+                    type: string
+                  description: "Recent songs or genres the user has chosen."
+      responses:
+        "200":
+          description: "A prompt encouraging the user to reflect on a recurring emotional or thematic pattern."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PromptResponse'
+
+  /personal-reflection-connector:
+    post:
+      operationId: connectPersonalReflection
+      summary: "Connect Current Choices with Past Reflections"
+      description: "Links the user’s present music preferences to past themes, creating continuity and fostering awareness of personal growth."
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                current_track:
+                  type: string
+                  description: "The song currently selected by the user."
+                past_reflection:
+                  type: string
+                  description: "A past theme or reflection the user frequently engages with, e.g., 'confidence', 'simplicity'."
+      responses:
+        "200":
+          description: "A prompt connecting the user’s current selection to a recurring theme or past reflection."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PromptResponse'
+
+  /emotion-based-situational-playlist:
+    post:
+      operationId: generateEmotionBasedPlaylist
+      summary: "Generate Emotionally Contextualized Playlists"
+      description: "Creates playlists based on nuanced emotional cues and situational context, allowing users to explore music tailored to their current emotional and situational needs."
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: '#/components/schemas/EmotionContextInfo'
+                - $ref: '#/components/schemas/SituationInfo'
+      responses:
+        "200":
+          description: "A playlist tailored to the user's mood and situational context."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PlaylistResponse'
+
+  /implicit-theme-detector:
+    post:
+      operationId: detectImplicitThemes
+      summary: "Identify Unconscious Theme Preferences"
+      description: "Detects themes or motifs that appear in the user’s music choices, providing a reflective prompt to help them explore these patterns."
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                songs:
+                  type: array
+                  items:
+                    type: string
+                  description: "A set of songs recently selected by the user."
+      responses:
+        "200":
+          description: "A prompt encouraging exploration of a detected theme, potentially unknown to the user."
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  theme:
+                    type: string
+                    example: "resilience"
+                  prompt:
+                    type: string
+                    example: "It seems like resilience is a recurring theme in your choices. Does this reflect something you’re focusing on right now?"
+
+  /cross-genre-preference-suggester:
+    post:
+      operationId: suggestCrossGenre
+      summary: "Suggest Cross-Genre Exploration Based on Common Qualities"
+      description: "Identifies cross-genre qualities the user enjoys, suggesting new genres or styles based on shared characteristics rather than genre boundaries."
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                genres:
+                  type: array
+                  items:
+                    type: string
+                  description: "Genres the user frequently listens to."
+                qualities:
+                  type: string
+                  description: "Shared qualities, like 'introspective', 'uplifting', 'instrumental focus'."
+      responses:
+        "200":
+          description: "A suggestion to explore a new genre or style based on the user’s shared preferences."
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  suggestion:
+                    type: string
+                    example: "If you're enjoying the introspective qualities of jazz and ambient, you might like neo-soul for a similar depth with a fresh vibe. Would you be open to exploring this?"
+
+  /serendipitous-discovery:
+    post:
+      operationId: recommendSerendipitousTrack
+      summary: "Introduce Serendipitous Track Recommendations"
+      description: "Provides an unexpected track recommendation related to the user’s typical choices but with a unique twist to encourage new exploration."
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                current_preferences:
+                  type: array
+                  items:
+                    type: string
+                  description: "Recent preferences or genres, for context."
+      responses:
+        "200":
+          description: "A serendipitous suggestion offering something new yet relevant to the user's preferences."
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  suggestion:
+                    type: string
+                    example: "Here’s something a bit different—a fusion of ambient and jazz. Give it a listen; it might surprise you!"
+                  reason:
+                    type: string
+                    example: "This track maintains the calm of ambient but with jazz’s emotional complexity—perfect for a fresh, introspective feel."
+
+  /real-time-mood-adjuster:
+    post:
+      operationId: adjustPlaylistForMood
+      summary: "Adjust Playlist Flow Based on Real-Time Mood Shifts"
+      description: "Allows the playlist to adapt dynamically to mood shifts over a session, catering to changes in the user’s emotional state."
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MoodInfo'
+      responses:
+        "200":
+          description: "A dynamically adjusted playlist suggestion that matches the user's evolving mood."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PlaylistUpdateResponse'
+
+  /feedback-reflection:
+    post:
+      operationId: collectFeedback
+      summary: "Collect User Feedback and Reflective Insights"
+      description: "Gathers user feedback on the recommendations, allowing the GPT to adjust future responses and recognize patterns in user preferences or needs."
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                feedback:
+                  type: string
+                  description: "The user’s feedback on the recommendations provided."
+      responses:
+        "200":
+          description: "Acknowledges the feedback, fostering a collaborative environment for enhanced experience."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FeedbackResponse'
