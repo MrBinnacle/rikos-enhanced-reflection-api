@@ -2,7 +2,9 @@ openapi: 3.1.0
 info:
   title: "Rikos Enhanced Reflection API"
   version: "3.0.0"
-
+servers:
+  - url: "https://example.com"
+    description: "Placeholder server URL"
 components:
   schemas:
     TrackInfo:
